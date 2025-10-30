@@ -36,13 +36,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if hero_id:
                 cursor.execute(
                     "SELECT g.id, g.hero_id, g.hero_name, g.author, g.skills, g.items, g.description, "
-                    "g.created_at::text FROM guides g WHERE g.hero_id = %s ORDER BY g.created_at DESC",
+                    "g.facet, g.created_at::text FROM guides g WHERE g.hero_id = %s ORDER BY g.created_at DESC",
                     (int(hero_id),)
                 )
             else:
                 cursor.execute(
                     "SELECT g.id, g.hero_id, g.hero_name, g.author, g.skills, g.items, g.description, "
-                    "g.created_at::text FROM guides g ORDER BY g.created_at DESC"
+                    "g.facet, g.created_at::text FROM guides g ORDER BY g.created_at DESC"
                 )
             
             guides_data = cursor.fetchall()
@@ -66,7 +66,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'skills': guide_row[4],
                     'items': guide_row[5],
                     'description': guide_row[6],
-                    'createdAt': guide_row[7],
+                    'facet': guide_row[7],
+                    'createdAt': guide_row[8],
                     'comments': comments
                 })
             
@@ -86,15 +87,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             if action == 'create_guide':
                 cursor.execute(
-                    "INSERT INTO guides (hero_id, hero_name, author, skills, items, description) "
-                    "VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+                    "INSERT INTO guides (hero_id, hero_name, author, skills, items, description, facet) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
                     (
                         body['heroId'],
                         body['heroName'],
                         body['author'],
                         body.get('skills', ''),
                         body.get('items', ''),
-                        body.get('description', '')
+                        body.get('description', ''),
+                        body.get('facet', '')
                     )
                 )
                 guide_id = cursor.fetchone()[0]
