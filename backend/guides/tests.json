@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "Get all guides",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create new guide",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "create_guide",
+        "heroId": 1,
+        "heroName": "Pudge",
+        "author": "TestPlayer",
+        "skills": "Q,W,Q,E",
+        "items": "Power Treads|5 min",
+        "description": "Test guide"
+      },
+      "expectedStatus": 201
+    }
+  ]
+}
